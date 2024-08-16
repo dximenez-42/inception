@@ -1,17 +1,21 @@
+DOCKER = docker compose -f srcs/docker-compose.yml
+
 all: up
 
-up: 
-	docker-compose -f ./srcs/docker-compose.yml up -d
+up:
+	$(DOCKER) up --detach --build
 
 start: 
-	docker-compose -f ./srcs/docker-compose.yml start
+	$(DOCKER) start
 
 down: 
-	docker-compose -f ./srcs/docker-compose.yml down
+	$(DOCKER) down
 
-stop: 
-	docker-compose -f ./srcs/docker-compose.yml stop
+stop:
+	$(DOCKER) stop
 
-clean: stop
-	docker-compose -f ./srcs/docker-compose.yml rm
-	docker-compose -f ./srcs/docker-compose.yml down --volumes --remove-orphans
+clean:
+	rm -rf /Users/dani/data/mariadb/* /Users/dani/data/wordpress/*
+	$(DOCKER) down --rmi all --volumes
+
+fclean: clean
