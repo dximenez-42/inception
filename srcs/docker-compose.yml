@@ -1,71 +1,33 @@
-version: "3.3"
+version: '3.8'
 
 services:
   nginx:
     container_name: nginx
     build: ./requirements/nginx
-    image: nginx
-    volumes:
-      - wp_data:/var/www/html
-    depends_on:
-      - wordpress
     ports:
-      - 443:443
-    networks:
-      - network
-    restart: always
-
-  mariadb:
-    container_name: mariadb
-    build:
-      context: ./requirements/mariadb
-      args:
-        DB_DATABASE: ${MYSQL_DATABASE}
-        DB_USER_NAME: ${MYSQL_USER}
-        DB_USER_PASSWORD: ${MYSQL_PASSWORD}
-        DB_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-    image: mariadb
+      - 80:80
     volumes:
-      - mariadb_data:/var/lib/mysql
-    networks:
-      - network
-    env_file:
-      - .env
-    restart: always
+      - ./web:/var/www/html
+    # networks:
+    #   - network
+    # restart: always
 
   wordpress:
     container_name: wordpress
-    build:
-      context: ./requirements/wordpress
-      args:
-        DB_HOST: ${MYSQL_HOSTNAME}
-    image: wordpress
+    build: ./requirements/wordpress
     volumes:
-      - wp_data:/var/www/html
-    depends_on:
-      - mariadb
-    networks:
-      - network
-    env_file:
-      - .env
-    restart: always
+      - ./web:/var/www/html
+    # networks:
+    #   - network
+    # restart: always
+
+  mariadb:
+    container_name: mariadb
+    build: ./requirements/mariadb
+    # networks:
+    #   - network
+    # restart: always
 
 networks:
   network:
     driver: bridge
-
-volumes:
-  mariadb_data:
-    name: mariadb_data
-    driver: local
-    driver_opts:
-      type: none
-      device: ${VOLUME_PATH}/mariadb
-      o: bind
-  wp_data:
-    driver: local
-    name: wp_data
-    driver_opts:
-      type: none
-      device: ${VOLUME_PATH}/wordpress
-      o: bind

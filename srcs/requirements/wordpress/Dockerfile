@@ -1,34 +1,17 @@
-FROM debian:buster
+FROM debian:latest
 
-# Install packages
-RUN apt update && apt install -y \
-    wget \
-    curl \
-    bash \
-    php \
-    php-cgi \
-    php-mysql \
+# Install WordPress
+RUN apt update -y
+RUN apt upgrade -y
+
+RUN apt install -y \
     php-fpm \
-    php-pdo \
-    php-gd php-cli \
-    php-mbstring
+    php-mysqli \
+    curl
 
-RUN rm -rf /var/lib/apt/lists/*
+COPY www.conf /etc/php/8.2/fpm/pool.d/www.conf
 
-RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
-    && chmod +x wp-cli.phar \
-    && mv wp-cli.phar /usr/local/bin/wp
+COPY wp_setup.sh .
+RUN chmod +x wp_setup.sh
 
-COPY ./conf/wordpress.conf /etc/php/7.3/fpm/pool.d
-
-RUN mkdir /run/php
-
-COPY ./tools/wp_setup.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/wp_setup.sh
-ENTRYPOINT ["/usr/local/bin/wp_setup.sh"]
-
-WORKDIR /var/www/html
-
-EXPOSE 9000
-
-CMD ["/usr/sbin/php-fpm7.3", "-F"]
+CMD ["./wp_setup.sh"]

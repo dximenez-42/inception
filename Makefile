@@ -15,7 +15,6 @@ stop:
 	$(DOCKER) stop
 
 clean:
-	rm -rf /Users/dani/data/mariadb/* /Users/dani/data/wordpress/*
 	$(DOCKER) down --rmi all --volumes
 
 fclean: clean
