@@ -11,4 +11,7 @@ COPY init.sql /etc/mysql/init.sql
 
 RUN mkdir /run/mysqld
 
-CMD ["mysqld"]
+COPY mariadb_setup.sh .
+RUN chmod +x mariadb_setup.sh
+
+CMD ["./mariadb_setup.sh"]
