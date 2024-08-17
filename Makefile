@@ -11,6 +11,9 @@ start:
 down: 
 	$(DOCKER) down
 
+down-v:
+	$(DOCKER) down --volumes
+
 stop:
 	$(DOCKER) stop
 
