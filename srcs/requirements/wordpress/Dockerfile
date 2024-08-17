@@ -1,17 +1,19 @@
-FROM debian:latest
+FROM debian:buster
 
 # Install WordPress
 RUN apt update -y
 RUN apt upgrade -y
 
 RUN apt install -y \
-    php-fpm \
-    php-mysqli \
+    php7.3-fpm \
+    php7.3-mysqli \
     curl
 
-COPY www.conf /etc/php/8.2/fpm/pool.d/www.conf
+COPY www.conf /etc/php/7.3/fpm/pool.d/www.conf
 
 COPY wp_setup.sh .
 RUN chmod +x wp_setup.sh
+
+RUN mkdir /run/php
 
 CMD ["./wp_setup.sh"]
