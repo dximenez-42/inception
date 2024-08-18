@@ -9,9 +9,9 @@ RUN apt install -y \
     php7.3-mysqli \
     curl
 
-COPY www.conf /etc/php/7.3/fpm/pool.d/www.conf
+COPY ./conf/www.conf /etc/php/7.3/fpm/pool.d/www.conf
 
-COPY wp_setup.sh .
+COPY ./tools/wp_setup.sh .
 RUN chmod +x wp_setup.sh
 
 RUN mkdir /run/php
