@@ -4,10 +4,19 @@ FROM debian:buster
 RUN apt update -y
 RUN apt upgrade -y
 
-RUN apt install -y mariadb-server
+RUN apt install -y mariadb-server gettext
+
 
 COPY 50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
-COPY init.sql /etc/mysql/init.sql
+
+COPY .env /etc/mysql/.env
+
+COPY init.sql /etc/mysql/init.temp.sql
+COPY substitute_env_vars.sh /usr/local/bin/substitute_env_vars.sh
+RUN chmod +x /usr/local/bin/substitute_env_vars.sh
+RUN /usr/local/bin/substitute_env_vars.sh
+RUN rm /etc/mysql/init.temp.sql
+RUN rm /etc/mysql/.env
 
 RUN mkdir /run/mysqld
 
